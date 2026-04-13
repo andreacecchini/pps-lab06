@@ -54,7 +54,14 @@ enum List[A]:
     foldLeft((Nil[Int](), 0)) {
       case ((indices, idx), _) => (indices append idx::Nil(), idx + 1)
     }._1
-  def zipWithIndex: List[(A, Int)] = ???
+  def zipWithIndex: List[(A, Int)] =
+    def zip[T1, T2](l1: List[T1], l2: List[T2]): List[(T1, T2)] =
+      require(l1.length() == l2.length())
+      (l1, l2) match
+        case (h1::t1, h2::t2) => (h1, h2)::zip(t1, t2)
+        case _ => Nil()
+    zip(this, indices())
+
   def partition(predicate: A => Boolean): (List[A], List[A]) = ???
   def span(predicate: A => Boolean): (List[A], List[A]) = ???
   def takeRight(n: Int): List[A] = ???

@@ -14,4 +14,6 @@ class ListTest:
     assertEquals(4, l.length())
   @Test def testIndices(): Unit =
     assertEquals(0::1::2::3::Nil(), l.indices())
+  @Test def testZipWithIndex(): Unit =
+    assertEquals((1, 0)::(2,1)::(3,2)::(4,3)::Nil(), l.zipWithIndex)
 end ListTest
