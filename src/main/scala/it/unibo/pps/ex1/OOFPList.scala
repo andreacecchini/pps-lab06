@@ -54,9 +54,11 @@ enum List[A]:
   def length(): Int = foldLeft(0)((acc, _) => acc + 1)
 
   def indices(): List[Int] =
-    foldLeft((Nil[Int](), 0)) {
+    val (indices, _) = foldLeft((Nil[Int](), 0)) {
       case ((indices, idx), _) => (indices append idx :: Nil(), idx + 1)
-    }._1
+    }
+    indices
+
 
   def zip[B](l2: List[B]): List[(A, B)] =
     require(length() == l2.length())
@@ -78,10 +80,10 @@ enum List[A]:
   }
 
   def takeRight(n: Int): List[A] =
-    val (result, _) = foldRight((Nil[A](), n)) {
+    val (right, _) = foldRight((Nil[A](), n)) {
       case (e, (l, n)) => if n > 0 then (e :: l, n - 1) else (l, n)
     }
-    result
+    right
 
   def collect(predicate: PartialFunction[A, A]): List[A] =
     // flatMap(a => if predicate.isDefinedAt(a) then predicate(a) :: Nil() else Nil())
