@@ -70,7 +70,10 @@ enum List[A]:
       case h :: t  if predicate(h) => loop(t, acc append h::Nil())
       case _ => (acc, remainder)
     loop(this, Nil())
-  def takeRight(n: Int): List[A] = ???
+  def takeRight(n: Int): List[A] =
+    foldRight((Nil[A](), n)){
+      case (e, (l, n)) => if n > 0 then (e::l, n-1) else (l, n)
+    }._1
   def collect(predicate: PartialFunction[A, A]): List[A] = ???
 // Factories
 object List:

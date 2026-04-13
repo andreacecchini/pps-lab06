@@ -24,4 +24,6 @@ class ListTest:
     val (untilTrue, rest) = l.span(_ % 2 != 0)
     assertEquals(1::Nil(), untilTrue)
     assertEquals(2::3::4::Nil(), rest)
+  @Test def testTakeRight(): Unit =
+    assertEquals(2::3::4::Nil(), l.takeRight(3))
 end ListTest
