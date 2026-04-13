@@ -81,7 +81,8 @@ enum List[A]:
 
   def takeRight(n: Int): List[A] =
     val (right, _) = foldRight((Nil[A](), n)) {
-      case (e, (l, n)) => if n > 0 then (e :: l, n - 1) else (l, n)
+      case (e, (l, n)) if n > 0 => (e :: l, n - 1)
+      case (_, (l, _)) => (l, 0)
     }
     right
 
