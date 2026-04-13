@@ -64,7 +64,7 @@ enum List[A]:
       case (h1 :: t1, h2 :: t2) => (h1, h2) :: t1.zip(t2)
       case _ => Nil()
 
-  def zipWithValue[B](value: B): List[(A, B)] = zip(List.of(value, length()))
+  def zipWithValue[B](value: B): List[(A, B)] = map((_, value))
 
   def zipWithIndex: List[(A, Int)] = zip(indices())
 
