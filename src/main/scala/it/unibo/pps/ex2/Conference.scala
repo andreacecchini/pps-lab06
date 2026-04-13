@@ -1,0 +1,140 @@
+package it.unibo.pps.ex2
+
+import it.unibo.pps.ex2
+
+object Conference:
+  /** Article Type. */
+  case class Article private(id: Int)
+
+  object Article:
+    def apply(id: Int): Article =
+      require(id >= 0)
+      new Article(id)
+
+  /** Score Type. */
+  case class Score private(score: Double)
+
+  object Score:
+    def apply(score: Int): Score =
+      require(score >= 0 && score <= 10)
+      new Score(score)
+
+  /** A set of question that the reviewer has to reply to review an article. */
+  enum Question:
+    /** Is it important for the conference? */
+    case RELEVANCE
+    /** Does it produce scientific contribute? */
+    case SIGNIFICANCE
+    /** Do you feel competent on commenting it? */
+    case CONFIDENCE
+    /** Is the article to be accepted? */
+    case FINAL
+
+  /**
+   * An interface modeling the results of reviewing articles of a conference.
+   * Each reviewer reads an article, and answers to a number of questions
+   * with a score from 0 (bad) to 10 (excellent).
+   * Note that each article can be reviewed by many reviewers (typically, from 2 to 4), but the
+   * system does not keep track of the identity of reviewers.
+   */
+  trait ConferenceReviewing:
+    /**
+     * Load a review for the specified article, with complete scores as a map.
+     * */
+    def loadReview(article: Article)(scores: Map[Question, Score]): Unit
+
+    /**
+     * @return the scores given to the specified article and specified question,
+     *         as an (ascending-ordered) list. */
+    def orderedScores(article: Article, question: Question): List[Score]
+
+    /**
+     * @return the average score to question FINAL taken by the specified article.
+     * */
+    def averageFinalScore(article: Article): Score
+
+    /**
+     * An article is considered accepted if its averageFinalScore (not weighted) is > 5,
+     * and at least one RELEVANCE score that is >= 8.
+     *
+     * @return the set of accepted articles
+     * */
+    def acceptedArticles: Set[Article]
+
+    /**
+     * @return accepted articles as a list of pairs article+averageFinalScore,
+     *         ordered from worst to best based on averageFinalScore.
+     */
+    def sortedAcceptedArticles: List[(Article, Score)]
+
+    /**
+     * @return a map from articles to their average "weighted final score",
+     *         namely, the average value of CONFIDENCE*FINAL/10.
+     */
+    def averageWeightedFinalScoreMap: Map[Article, Score]
+  end ConferenceReviewing
+
+  // Factories
+  object ConferenceReviewing:
+    // TODO: implement ConferenceReviewing
+    def apply(): ConferenceReviewing = ???
+  end ConferenceReviewing
+
+end Conference
+
+
+@main def testArticle(): Unit =
+  import Conference.*
+  // val negative = Article(-1) // IllegalArgumentException
+  val a1: Article /* Int */ = Article(1)
+  println(a1)
+
+@main def testScore(): Unit =
+  import Conference.*
+  // val negative = Score(-5) // IllegalArgumentException
+  // val upToTen = Score(11) // IllegalArgumentException
+  // val decimal = Score(7.5) // Score requires an Int!
+  val s: Score /* Double */ = Score(10)
+  println(s)
+
+@main def testConference(): Unit =
+  import Conference.*
+  import Question.*
+  val conferenceReviewing = ConferenceReviewing()
+  val a1 = Article(1)
+  val a2 = Article(2)
+  // Load Article 1
+  // first reviewer
+  conferenceReviewing.loadReview(a1):
+    Map(
+      RELEVANCE -> Score(7),
+      SIGNIFICANCE -> Score(8),
+      CONFIDENCE -> Score(7),
+      FINAL -> Score(8))
+  // second reviewer
+  conferenceReviewing.loadReview(a1):
+    Map(
+      RELEVANCE -> Score(6),
+      SIGNIFICANCE -> Score(7),
+      CONFIDENCE -> Score(6),
+      FINAL -> Score(7))
+  // Load Article 2
+  // first reviewer
+  conferenceReviewing.loadReview(a2):
+    Map(
+      RELEVANCE -> Score(9),
+      SIGNIFICANCE -> Score(9),
+      CONFIDENCE -> Score(8),
+      FINAL -> Score(9))
+  // Accepted articles
+  println(conferenceReviewing.acceptedArticles)
+  // Accepted articles sorted by score
+  println(conferenceReviewing.sortedAcceptedArticles)
+  // Article 1's average final score
+  println(conferenceReviewing.averageFinalScore(a1))
+  // Article 2's average final score
+  println(conferenceReviewing.averageFinalScore(a2))
+  // Ordered scores for RELEVANCE in Article 1
+  println(conferenceReviewing.orderedScores(a1, RELEVANCE))
+  // Weighted final score per Article
+  println(conferenceReviewing.averageWeightedFinalScoreMap)
