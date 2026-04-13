@@ -24,10 +24,12 @@ enum List[A]:
     case _ => None
 
   def foldLeft[B](init: B)(op: (B, A) => B): B = this match
+    // op(op(init, 2), 1)
     case h :: t => t.foldLeft(op(init, h))(op)
     case _ => init
 
   def foldRight[B](init: B)(op: (A, B) => B): B = this match
+    // op(1, op(2, init))
     case h :: t => op(h, t.foldRight(init)(op))
     case _ => init
 
@@ -35,7 +37,7 @@ enum List[A]:
     foldRight(list)(_ :: _)
 
   def flatMap[B](f: A => List[B]): List[B] =
-    foldRight(Nil())(f(_) append _)
+    foldLeft(Nil())(_ append f(_))
 
   def filter(predicate: A => Boolean): List[A] = flatMap(a => if predicate(a) then a :: Nil() else Nil())
 
