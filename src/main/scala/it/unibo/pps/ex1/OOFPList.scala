@@ -6,11 +6,12 @@ import scala.annotation.tailrec
 enum List[A]:
   case ::(h: A, t: List[A])
   case Nil()
+
   def ::(h: A): List[A] = List.::(h, this)
 
   def head: Option[A] = this match
-    case h :: t => Some(h)  // pattern for scala.Option
-    case _ => None          // pattern for scala.Option
+    case h :: t => Some(h) // pattern for scala.Option
+    case _ => None // pattern for scala.Option
 
   def tail: Option[List[A]] = this match
     case h :: t => Some(t)
@@ -48,32 +49,41 @@ enum List[A]:
   def reduce(op: (A, A) => A): A = this match
     case Nil() => throw new IllegalStateException()
     case h :: t => t.foldLeft(h)(op)
-  
+
   // Exercise: implement the following methods
   def zipWithValue[B](value: B): List[(A, B)] = map(a => (a, value))
+
   def length(): Int = foldLeft(0)((acc, _) => acc + 1)
+
   def indices(): List[Int] =
     foldLeft((Nil[Int](), 0)) {
-      case ((indices, idx), _) => (indices append idx::Nil(), idx + 1)
+      case ((indices, idx), _) => (indices append idx :: Nil(), idx + 1)
     }._1
+
   def zipWithIndex: List[(A, Int)] =
     def zip[T1, T2](l1: List[T1], l2: List[T2]): List[(T1, T2)] =
       require(l1.length() == l2.length())
       (l1, l2) match
-        case (h1::t1, h2::t2) => (h1, h2)::zip(t1, t2)
+        case (h1 :: t1, h2 :: t2) => (h1, h2) :: zip(t1, t2)
         case _ => Nil()
+
     zip(this, indices())
+
   def partition(predicate: A => Boolean): (List[A], List[A]) = (filter(predicate(_)), filter(!predicate(_)))
+
   def span(predicate: A => Boolean): (List[A], List[A]) =
     @tailrec
     def loop(remainder: List[A], acc: List[A]): (List[A], List[A]) = remainder match
-      case h :: t  if predicate(h) => loop(t, acc append h::Nil())
+      case h :: t if predicate(h) => loop(t, acc append h :: Nil())
       case _ => (acc, remainder)
+
     loop(this, Nil())
+
   def takeRight(n: Int): List[A] =
     foldRight((Nil[A](), n)) {
-      case (e, (l, n)) => if n > 0 then (e::l, n-1) else (l, n)
+      case (e, (l, n)) => if n > 0 then (e :: l, n - 1) else (l, n)
     }._1
+
   def collect(predicate: PartialFunction[A, A]): List[A] = {
     // filter(predicate.isDefinedAt).map(predicate(_))
     flatMap(a => if predicate.isDefinedAt(a) then predicate(a) :: Nil() else Nil())
@@ -91,7 +101,9 @@ object List:
     if n == 0 then Nil() else elem :: of(elem, n - 1)
 
 object Test extends App:
+
   import List.*
+
   val reference = List(1, 2, 3, 4)
   println(reference.zipWithValue(10)) // List((1, 10), (2, 10), (3, 10), (4, 10))
   println(reference.length()) // 4
