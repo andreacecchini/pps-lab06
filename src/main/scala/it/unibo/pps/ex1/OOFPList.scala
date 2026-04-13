@@ -70,13 +70,12 @@ enum List[A]:
 
   def partition(predicate: A => Boolean): (List[A], List[A]) = (filter(predicate(_)), filter(!predicate(_)))
 
-  def span(predicate: A => Boolean): (List[A], List[A]) =
-    @tailrec
-    def loop(remainder: List[A], acc: List[A]): (List[A], List[A]) = remainder match
-      case h :: t if predicate(h) => loop(t, acc append h :: Nil())
-      case _ => (acc, remainder)
-
-    loop(this, Nil())
+  def span(predicate: A => Boolean): (List[A], List[A]) = {
+    foldLeft((Nil(), Nil())) {
+      case ((prefix, Nil()), e) if predicate(e) => (prefix append e::Nil(), Nil())
+      case ((prefix, remainder), e) => (prefix, remainder append e::Nil())
+    }
+  }
 
   def takeRight(n: Int): List[A] =
     foldRight((Nil[A](), n)) {
