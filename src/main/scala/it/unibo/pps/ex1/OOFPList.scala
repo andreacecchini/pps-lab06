@@ -31,10 +31,10 @@ enum List[A]:
     case h :: t => t.foldLeft(op(init, h))(op)
     case _ => init
 
-  def foldRight[B](init: B)(op: (A, B) => B): B = this match
-    // op(1, op(2, init))
-    case h :: t => op(h, t.foldRight(init)(op))
-    case _ => init
+  def reverse(): List[A] = foldLeft(Nil())((acc, e) => e :: acc)
+
+  def foldRight[B](init: B)(op: (A, B) => B): B =
+    reverse().foldLeft(init)(op = (b, a) => op(a, b))
 
   def append(list: List[A]): List[A] =
     foldRight(list)(_ :: _)
