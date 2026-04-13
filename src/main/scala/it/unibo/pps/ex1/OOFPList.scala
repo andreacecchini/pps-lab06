@@ -82,10 +82,9 @@ enum List[A]:
       case (e, (l, n)) => if n > 0 then (e :: l, n - 1) else (l, n)
     }._1
 
-  def collect(predicate: PartialFunction[A, A]): List[A] = {
-    // filter(predicate.isDefinedAt).map(predicate(_))
-    flatMap(a => if predicate.isDefinedAt(a) then predicate(a) :: Nil() else Nil())
-  }
+  def collect(predicate: PartialFunction[A, A]): List[A] =
+    // flatMap(a => if predicate.isDefinedAt(a) then predicate(a) :: Nil() else Nil())
+    filter(predicate.isDefinedAt).map(predicate(_))
 
 // Factories
 object List:
