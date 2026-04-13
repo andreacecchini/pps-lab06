@@ -51,7 +51,8 @@ enum List[A]:
     case h :: t => t.foldLeft(h)(op)
 
   // Exercise: implement the following methods
-  def length(): Int = foldLeft(0)((acc, _) => acc + 1)
+  def length(): Int =
+    foldLeft(0)((acc, _) => acc + 1)
 
   def indices(): List[Int] =
     val (indices, _) = foldLeft((Nil[Int](), 0)) {
@@ -59,18 +60,20 @@ enum List[A]:
     }
     indices
 
-
   def zip[B](l2: List[B]): List[(A, B)] =
     require(length() == l2.length())
     (this, l2) match
       case (h1 :: t1, h2 :: t2) => (h1, h2) :: t1.zip(t2)
       case _ => Nil()
 
-  def zipWithValue[B](value: B): List[(A, B)] = map((_, value))
+  def zipWithValue[B](value: B): List[(A, B)] =
+    map((_, value))
 
-  def zipWithIndex: List[(A, Int)] = zip(indices())
+  def zipWithIndex: List[(A, Int)] =
+    zip(indices())
 
-  def partition(predicate: A => Boolean): (List[A], List[A]) = (filter(predicate(_)), filter(!predicate(_)))
+  def partition(predicate: A => Boolean): (List[A], List[A]) =
+    (filter(predicate(_)), filter(!predicate(_)))
 
   def span(predicate: A => Boolean): (List[A], List[A]) =
     foldLeft((Nil(), Nil())) {
