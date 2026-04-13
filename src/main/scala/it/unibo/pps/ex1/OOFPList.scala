@@ -34,7 +34,7 @@ enum List[A]:
   def reverse(): List[A] = foldLeft(Nil())((acc, e) => e :: acc)
 
   def foldRight[B](init: B)(op: (A, B) => B): B =
-    reverse().foldLeft(init)(op = (b, a) => op(a, b))
+    reverse().foldLeft(init)((b, a) => op(a, b))
 
   def append(list: List[A]): List[A] =
     foldRight(list)(_ :: _)
@@ -42,9 +42,9 @@ enum List[A]:
   def flatMap[B](f: A => List[B]): List[B] =
     foldLeft(Nil())(_ append f(_))
 
-  def filter(predicate: A => Boolean): List[A] = flatMap(a => if predicate(a) then a :: Nil() else Nil())
+  def filter(predicate: A => Boolean): List[A] = flatMap(a => if predicate(a) then List(a) else Nil())
 
-  def map[B](fun: A => B): List[B] = flatMap(a => fun(a) :: Nil())
+  def map[B](fun: A => B): List[B] = flatMap(a => List(fun(a)))
 
   def reduce(op: (A, A) => A): A = this match
     case Nil() => throw new IllegalStateException()
@@ -55,7 +55,7 @@ enum List[A]:
 
   def indices(): List[Int] =
     val (indices, _) = foldLeft((Nil[Int](), 0)) {
-      case ((indices, idx), _) => (indices append idx :: Nil(), idx + 1)
+      case ((indices, idx), _) => (indices append List(idx), idx + 1)
     }
     indices
 
@@ -74,8 +74,8 @@ enum List[A]:
 
   def span(predicate: A => Boolean): (List[A], List[A]) =
     foldLeft((Nil(), Nil())) {
-      case ((prefix, Nil()), e) if predicate(e) => (prefix append e::Nil(), Nil())
-      case ((prefix, remainder), e) => (prefix, remainder append e::Nil())
+      case ((prefix, Nil()), e) if predicate(e) => (prefix append List(e), Nil())
+      case ((prefix, remainder), e) => (prefix, remainder append List(e))
     }
 
   def takeRight(n: Int): List[A] =
