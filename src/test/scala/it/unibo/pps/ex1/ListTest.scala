@@ -20,4 +20,8 @@ class ListTest:
     val (lTrue, lFalse) = l.partition(_ % 2 == 0)
     assertEquals(2 :: 4 :: Nil(), lTrue)
     assertEquals(1::3::Nil(), lFalse)
+  @Test def testSpan(): Unit =
+    val (untilTrue, rest) = l.span(_ % 2 != 0)
+    assertEquals(1::Nil(), untilTrue)
+    assertEquals(2::3::4::Nil(), rest)
 end ListTest

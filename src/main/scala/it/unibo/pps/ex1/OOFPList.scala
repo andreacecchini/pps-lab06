@@ -1,5 +1,7 @@
 package it.unibo.pps.ex1
 
+import scala.annotation.tailrec
+
 // List as a pure interface
 enum List[A]:
   case ::(h: A, t: List[A])
@@ -61,9 +63,13 @@ enum List[A]:
         case (h1::t1, h2::t2) => (h1, h2)::zip(t1, t2)
         case _ => Nil()
     zip(this, indices())
-
   def partition(predicate: A => Boolean): (List[A], List[A]) = (filter(predicate(_)), filter(!predicate(_)))
-  def span(predicate: A => Boolean): (List[A], List[A]) = ???
+  def span(predicate: A => Boolean): (List[A], List[A]) =
+    @tailrec
+    def loop(remainder: List[A], acc: List[A]): (List[A], List[A]) = remainder match
+      case h :: t  if predicate(h) => loop(t, acc append h::Nil())
+      case _ => (acc, remainder)
+    loop(this, Nil())
   def takeRight(n: Int): List[A] = ???
   def collect(predicate: PartialFunction[A, A]): List[A] = ???
 // Factories
