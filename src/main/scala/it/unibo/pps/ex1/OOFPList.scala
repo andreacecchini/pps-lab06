@@ -50,7 +50,10 @@ enum List[A]:
   // Exercise: implement the following methods
   def zipWithValue[B](value: B): List[(A, B)] = map(a => (a, value))
   def length(): Int = foldLeft(0)((acc, _) => acc + 1)
-  def indices(): List[A] = ???
+  def indices(): List[Int] =
+    foldLeft((Nil[Int](), 0)) {
+      case ((indices, idx), _) => (indices append idx::Nil(), idx + 1)
+    }._1
   def zipWithIndex: List[(A, Int)] = ???
   def partition(predicate: A => Boolean): (List[A], List[A]) = ???
   def span(predicate: A => Boolean): (List[A], List[A]) = ???
