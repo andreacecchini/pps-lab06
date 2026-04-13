@@ -62,7 +62,7 @@ enum List[A]:
         case _ => Nil()
     zip(this, indices())
 
-  def partition(predicate: A => Boolean): (List[A], List[A]) = ???
+  def partition(predicate: A => Boolean): (List[A], List[A]) = (filter(predicate(_)), filter(!predicate(_)))
   def span(predicate: A => Boolean): (List[A], List[A]) = ???
   def takeRight(n: Int): List[A] = ???
   def collect(predicate: PartialFunction[A, A]): List[A] = ???

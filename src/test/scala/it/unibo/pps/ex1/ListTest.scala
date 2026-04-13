@@ -16,4 +16,8 @@ class ListTest:
     assertEquals(0::1::2::3::Nil(), l.indices())
   @Test def testZipWithIndex(): Unit =
     assertEquals((1, 0)::(2,1)::(3,2)::(4,3)::Nil(), l.zipWithIndex)
+  @Test def testPartition(): Unit =
+    val (lTrue, lFalse) = l.partition(_ % 2 == 0)
+    assertEquals(2 :: 4 :: Nil(), lTrue)
+    assertEquals(1::3::Nil(), lFalse)
 end ListTest
