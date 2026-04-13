@@ -10,5 +10,6 @@ class ListTest:
   @Test def testZipWithValue(): Unit =
     val value = 10
     assertEquals((1, 10)::(2,10)::(3,10)::(4,10)::Nil(), l.zipWithValue(10))
-
+  @Test def testLenght(): Unit =
+    assertEquals(4, l.length())
 end ListTest
