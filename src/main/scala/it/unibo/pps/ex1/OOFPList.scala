@@ -78,9 +78,10 @@ enum List[A]:
   }
 
   def takeRight(n: Int): List[A] =
-    foldRight((Nil[A](), n)) {
+    val (result, _) = foldRight((Nil[A](), n)) {
       case (e, (l, n)) => if n > 0 then (e :: l, n - 1) else (l, n)
-    }._1
+    }
+    result
 
   def collect(predicate: PartialFunction[A, A]): List[A] =
     // flatMap(a => if predicate.isDefinedAt(a) then predicate(a) :: Nil() else Nil())
