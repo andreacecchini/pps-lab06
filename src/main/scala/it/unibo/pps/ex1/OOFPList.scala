@@ -71,10 +71,14 @@ enum List[A]:
       case _ => (acc, remainder)
     loop(this, Nil())
   def takeRight(n: Int): List[A] =
-    foldRight((Nil[A](), n)){
+    foldRight((Nil[A](), n)) {
       case (e, (l, n)) => if n > 0 then (e::l, n-1) else (l, n)
     }._1
-  def collect(predicate: PartialFunction[A, A]): List[A] = ???
+  def collect(predicate: PartialFunction[A, A]): List[A] = {
+    // filter(predicate.isDefinedAt).map(predicate(_))
+    flatMap(a => if predicate.isDefinedAt(a) then predicate(a) :: Nil() else Nil())
+  }
+
 // Factories
 object List:
 

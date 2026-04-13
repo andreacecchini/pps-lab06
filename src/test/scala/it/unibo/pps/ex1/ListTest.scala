@@ -26,4 +26,6 @@ class ListTest:
     assertEquals(2::3::4::Nil(), rest)
   @Test def testTakeRight(): Unit =
     assertEquals(2::3::4::Nil(), l.takeRight(3))
+  @Test def testCollect(): Unit =
+    assertEquals(3::5::Nil(), l.collect { case x if x % 2 == 0 => x + 1})
 end ListTest
