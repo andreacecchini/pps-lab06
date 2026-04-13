@@ -102,9 +102,6 @@ object List:
     if n == 0 then Nil() else elem :: of(elem, n - 1)
 
 object Test extends App:
-
-  import List.*
-
   val reference = List(1, 2, 3, 4)
   println(reference.zipWithValue(10)) // List((1, 10), (2, 10), (3, 10), (4, 10))
   println(reference.length()) // 4
