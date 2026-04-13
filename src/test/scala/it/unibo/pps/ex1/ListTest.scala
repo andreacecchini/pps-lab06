@@ -8,7 +8,7 @@ class ListTest:
 
   import List.*
 
-  val l: List[Int] = 1 :: 2 :: 3 :: 4 :: Nil()
+  val l: List[Int] = List(1, 2, 3, 4)
 
   @Test def testZipWithValue(): Unit =
     val value = 10

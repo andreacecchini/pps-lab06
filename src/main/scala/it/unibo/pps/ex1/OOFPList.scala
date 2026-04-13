@@ -93,9 +93,7 @@ enum List[A]:
 object List:
 
   def apply[A](elems: A*): List[A] =
-    var list: List[A] = Nil()
-    for e <- elems.reverse do list = e :: list
-    list
+    elems.foldRight(Nil())((e, acc) => e :: acc)
 
   def of[A](elem: A, n: Int): List[A] =
     if n == 0 then Nil() else elem :: of(elem, n - 1)
