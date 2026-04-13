@@ -4,7 +4,7 @@ import it.unibo.pps.ex2
 
 object Conference:
   /** Article Type. */
-  case class Article private(id: Int)
+  case class Article private(private[Conference] id: Int)
 
   object Article:
     def apply(id: Int): Article =
@@ -12,7 +12,7 @@ object Conference:
       new Article(id)
 
   /** Score Type. */
-  case class Score private(score: Double)
+  case class Score private(private[Conference] score: Double)
 
   object Score:
     def apply(score: Int): Score =
