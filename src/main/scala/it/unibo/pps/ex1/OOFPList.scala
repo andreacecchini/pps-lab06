@@ -48,7 +48,7 @@ enum List[A]:
     case h :: t => t.foldLeft(h)(op)
   
   // Exercise: implement the following methods
-  def zipWithValue[B](value: B): List[(A, B)] = ???
+  def zipWithValue[B](value: B): List[(A, B)] = map(a => (a, value))
   def length(): Int = ???
   def indices(): List[A] = ???
   def zipWithIndex: List[(A, Int)] = ???
