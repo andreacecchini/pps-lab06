@@ -91,7 +91,7 @@ object Conference:
         reviews
           .filter((a, _) => a == article)
           .flatMap((_, s) => s.get(Question.FINAL)
-            .flatMap(fs => s.get(Question.RELEVANCE)
+            .flatMap(fs => s.get(Question.CONFIDENCE)
               .map(cs => fs * cs / 10)))
           .averageScore
 
