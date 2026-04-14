@@ -4,20 +4,20 @@ import it.unibo.pps.ex2
 
 object Conference:
   /** Article Type. */
-  case class Article private(private[Conference] id: Int)
+  opaque type Article = Int
 
   object Article:
     def apply(id: Int): Article =
       require(id >= 0)
-      new Article(id)
+      id
 
   /** Score Type. */
-  case class Score private(private[Conference] score: Double)
+  opaque type Score = Double
 
   object Score:
     def apply(score: Int): Score =
       require(score >= 0 && score <= 10)
-      new Score(score)
+      score
 
   /** A set of question that the reviewer has to reply to review an article. */
   enum Question:
@@ -126,6 +126,8 @@ end Conference
       SIGNIFICANCE -> Score(9),
       CONFIDENCE -> Score(8),
       FINAL -> Score(9))
+  // Ordered scores for RELEVANCE in Article 1
+  println(conferenceReviewing.orderedScores(a1, RELEVANCE))
   // Accepted articles
   println(conferenceReviewing.acceptedArticles)
   // Accepted articles sorted by score
@@ -134,7 +136,5 @@ end Conference
   println(conferenceReviewing.averageFinalScore(a1))
   // Article 2's average final score
   println(conferenceReviewing.averageFinalScore(a2))
-  // Ordered scores for RELEVANCE in Article 1
-  println(conferenceReviewing.orderedScores(a1, RELEVANCE))
   // Weighted final score per Article
   println(conferenceReviewing.averageWeightedFinalScoreMap)
