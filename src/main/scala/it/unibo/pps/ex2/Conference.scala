@@ -139,7 +139,7 @@ end Conference
   // val negative = Score(-5) // IllegalArgumentException
   // val upToTen = Score(11) // IllegalArgumentException
   // val decimal = Score(7.5) // Score requires an Int!
-  val s: Score /* Double */ = Score(10)
+  val s: Score = Score(10)
   println(s)
 
 @main def testConference(): Unit =
