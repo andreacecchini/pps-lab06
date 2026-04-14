@@ -52,7 +52,7 @@ object Conference:
     /**
      * @return the scores given to the specified article and specified question,
      *         as an (ascending-ordered) list. */
-    def orderedScores(article: Article, question: Question): List[Score]
+    def orderedScores(article: Article, question: Question): Seq[Score]
 
     /**
      * @return the average score to question FINAL taken by the specified article.
@@ -71,7 +71,7 @@ object Conference:
      * @return accepted articles as a list of pairs article+averageFinalScore,
      *         ordered from worst to best based on averageFinalScore.
      */
-    def sortedAcceptedArticles: List[(Article, Score)]
+    def sortedAcceptedArticles: Seq[(Article, Score)]
 
     /**
      * @return a map from articles to their average "weighted final score",
@@ -84,14 +84,14 @@ object Conference:
     def apply(): ConferenceReviewing = new ConferenceReviewing:
       private val thresholdFinal = Score(5)
       private val thresholdRelevance = Score(8)
-      private var reviews: List[(Article, Map[Question, Score])] = List.empty
+      private var reviews: Seq[(Article, Map[Question, Score])] = Seq.empty
 
-      private def scores(article: Article, question: Question): List[Score] =
+      private def scores(article: Article, question: Question): Seq[Score] =
         reviews filter (_._1 == article) flatMap (_._2.get(question))
 
       private def articles: Set[Article] = reviews.map((a, _) => a).toSet
 
-      extension (scores: List[Score])
+      extension (scores: Seq[Score])
         private def averageScore: Score =
           if scores.isEmpty then Score.zero else scores.sum / scores.length
 
@@ -103,9 +103,9 @@ object Conference:
 
       override def loadReview(article: Article)(scores: Map[Question, Score]): Unit =
         require(scores.keySet == Question.values.toSet)
-        reviews ::= article -> scores
+        reviews +:= article -> scores
 
-      override def orderedScores(article: Article, question: Question): List[Score] =
+      override def orderedScores(article: Article, question: Question): Seq[Score] =
         scores(article, question).sorted
 
       override def averageFinalScore(article: Article): Score =
