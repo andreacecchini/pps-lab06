@@ -8,6 +8,11 @@ object Conference:
   opaque type Article = Int
 
   object Article:
+    /**
+     * @param id article's id.
+     * @return an [[Article]] with the given [[id]].
+     * @throws scala.IllegalArgumentException on negative [[id]]s.
+     */
     def apply(id: Int): Article =
       require(id >= 0)
       id
@@ -17,6 +22,11 @@ object Conference:
   opaque type Score = Double
 
   object Score:
+    /**
+     * @param score the score from [[0]] to [[10]].
+     * @return a [[Score]].
+     * @throws scala.IllegalArgumentException if score is not between [[0]] and [[10]].
+     */
     def apply(score: Int): Score =
       require(score >= 0 && score <= 10)
       score
