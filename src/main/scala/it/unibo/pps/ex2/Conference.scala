@@ -20,10 +20,10 @@ object Conference:
       score
 
     /** Score = 0. */
-    def zero: Score = apply(0)
+    val zero: Score = apply(0)
 
     /** Score = 10. */
-    def max: Score = apply(10)
+    val max: Score = apply(10)
 
   /** A set of question that the reviewer has to reply to review an article. */
   enum Question:
@@ -131,7 +131,7 @@ end Conference
 @main def testArticle(): Unit =
   import Conference.*
   // val negative = Article(-1) // IllegalArgumentException
-  val a1: Article /* Int */ = Article(1)
+  val a1: Article = Article(1)
   println(a1)
 
 @main def testScore(): Unit =
