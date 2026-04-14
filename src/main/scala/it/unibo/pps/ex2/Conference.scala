@@ -1,7 +1,6 @@
 package it.unibo.pps.ex2
 
 import it.unibo.pps.ex2
-import it.unibo.pps.ex2.Conference.Question.CONFIDENCE
 
 object Conference:
   /** Article Type. */
@@ -19,6 +18,12 @@ object Conference:
     def apply(score: Int): Score =
       require(score >= 0 && score <= 10)
       score
+
+    /** Score = 0. */
+    def zero: Score = apply(0)
+
+    /** Score = 10. */
+    def max: Score = apply(10)
 
   /** A set of question that the reviewer has to reply to review an article. */
   enum Question:
@@ -77,6 +82,8 @@ object Conference:
 
   object ConferenceReviewing:
     def apply(): ConferenceReviewing = new ConferenceReviewing:
+      private val thresholdFinal = Score(5)
+      private val thresholdRelevance = Score(8)
       private var reviews: List[(Article, Map[Question, Score])] = List.empty
 
       private def scores(article: Article, question: Question): List[Score] =
@@ -86,12 +93,13 @@ object Conference:
 
       extension (scores: List[Score])
         private def averageScore: Score =
-          if scores.isEmpty then 0 else scores.sum / scores.length
+          if scores.isEmpty then Score.zero else scores.sum / scores.length
 
       private def averageWeightedFinalScore(article: Article): Score =
-        val finalScores = scores(article, Question.FINAL)
-        val confidenceScores = scores(article, CONFIDENCE)
-        (finalScores zip confidenceScores map(_ * _ / 10)).averageScore
+        val articleScores = scores.curried(article)
+        (articleScores(Question.FINAL) zip articleScores(Question.CONFIDENCE))
+          .map(_ * _ / Score.max)
+          .averageScore
 
       override def loadReview(article: Article)(scores: Map[Question, Score]): Unit =
         require(scores.keySet == Question.values.toSet)
@@ -104,8 +112,8 @@ object Conference:
         scores(article, Question.FINAL).averageScore
 
       override def acceptedArticles: Set[Article] = articles
-        .filter(averageFinalScore(_) > 5)
-        .filter(scores(_, Question.RELEVANCE) exists (_ >= 8))
+        .filter(averageFinalScore(_) > thresholdFinal)
+        .filter(scores(_, Question.RELEVANCE) exists (_ >= thresholdRelevance))
 
       override def sortedAcceptedArticles: List[(Article, Score)] = acceptedArticles
         .map(a => a -> averageFinalScore(a))
