@@ -115,7 +115,7 @@ object Conference:
         .filter(averageFinalScore(_) > thresholdFinal)
         .filter(scores(_, Question.RELEVANCE) exists (_ >= thresholdRelevance))
 
-      override def sortedAcceptedArticles: List[(Article, Score)] = acceptedArticles
+      override def sortedAcceptedArticles: Seq[(Article, Score)] = acceptedArticles
         .map(a => (a, averageFinalScore(a)))
         .toList
         .sortBy((_, s) => s)
