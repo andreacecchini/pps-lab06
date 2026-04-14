@@ -3,7 +3,8 @@ package it.unibo.pps.ex2
 import it.unibo.pps.ex2
 
 object Conference:
-  /** Article Type. */
+  /** Represents an article in the conference.
+   * */
   opaque type Article = Int
 
   object Article:
@@ -11,21 +12,23 @@ object Conference:
       require(id >= 0)
       id
 
-  /** Score Type. */
+  /** Represents the score given by reviewers to [[Article]].
+   * */
   opaque type Score = Double
 
   object Score:
     def apply(score: Int): Score =
       require(score >= 0 && score <= 10)
       score
-
-    /** Score = 0. */
+    /** Minimum [[Score]].
+     * */
     val zero: Score = apply(0)
-
-    /** Score = 10. */
+    /** Maximum [[Score]].
+     * */
     val max: Score = apply(10)
 
-  /** A set of question that the reviewer has to reply to review an article. */
+  /** A set of question that the reviewer has to reply to review an [[Article]].
+   * */
   enum Question:
     /** Is it important for the conference? */
     case RELEVANCE
@@ -44,18 +47,16 @@ object Conference:
    * system does not keep track of the identity of reviewers.
    */
   trait ConferenceReviewing:
-    /**
-     * Load a review for the specified article, with complete scores as a map.
+    /** Load a review for the specified article, with complete scores as a map.
      * */
     def loadReview(article: Article)(scores: Map[Question, Score]): Unit
 
-    /**
-     * @return the scores given to the specified article and specified question,
-     *         as an (ascending-ordered) list. */
+    /** @return the scores given to the specified article and specified question,
+     *          as an (ascending-ordered) list.
+     */
     def orderedScores(article: Article, question: Question): Seq[Score]
 
-    /**
-     * @return the average score to question FINAL taken by the specified article.
+    /** @return the average score to question FINAL taken by the specified article.
      * */
     def averageFinalScore(article: Article): Score
 
@@ -67,15 +68,13 @@ object Conference:
      * */
     def acceptedArticles: Set[Article]
 
-    /**
-     * @return accepted articles as a list of pairs article+averageFinalScore,
-     *         ordered from worst to best based on averageFinalScore.
+    /** @return accepted articles as a list of pairs article+averageFinalScore,
+     *          ordered from worst to best based on averageFinalScore.
      */
     def sortedAcceptedArticles: Seq[(Article, Score)]
 
-    /**
-     * @return a map from articles to their average "weighted final score",
-     *         namely, the average value of CONFIDENCE*FINAL/10.
+    /** @return a map from articles to their average "weighted final score",
+     *          namely, the average value of CONFIDENCE*FINAL/10.
      */
     def averageWeightedFinalScoreMap: Map[Article, Score]
   end ConferenceReviewing
