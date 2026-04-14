@@ -78,37 +78,14 @@ object Conference:
     def apply(): ConferenceReviewing = new ConferenceReviewing:
       private var reviews: List[(Article, Map[Question, Score])] = List.empty
 
-      def loadReview(article: Article)(scores: Map[Question, Score]): Unit =
-        require(scores.keySet == Question.values.toSet)
-        reviews ::= article -> scores
-
-      def orderedScores(article: Article, question: Question): List[Score] =
-        reviews
-          .filter((a, _) => a == article)
-          .flatMap((_, s) => s.get(question))
-
-      def averageFinalScore(article: Article): Score =
-        reviews
-          .filter((a, _) => a == article)
-          .flatMap((_, s) => s.get(Question.FINAL))
-          .averageScore
-
-      def acceptedArticles: Set[Article] =
-        reviews
-          .filter((a, s) => averageFinalScore(a) > 5 && s.getOrElse(Question.RELEVANCE, 0.0) >= 8)
-          .map((a, _) => a)
-          .toSet
-
-      def sortedAcceptedArticles: List[(Article, Score)] =
-        acceptedArticles
-          .map(a => a -> averageFinalScore(a))
-          .toList
-          .sortBy((_, s) => s)
-
-      def averageWeightedFinalScoreMap: Map[Article, Score] =
-        articles.map(a => a -> averageWeightedFinalScore(a)).toMap
+      private def questionScores(article: Article, question: Question): List[Score] =
+        reviews filter (_._1 == article) flatMap (_._2.get(question))
 
       private def articles: Set[Article] = reviews.map((a, _) => a).toSet
+
+      extension (scores: List[Score])
+        private def averageScore: Score =
+          if scores.isEmpty then 0 else scores.sum / scores.length
 
       private def averageWeightedFinalScore(article: Article): Score =
         reviews
@@ -118,9 +95,28 @@ object Conference:
               .map(cs => fs * cs / 10)))
           .averageScore
 
-      extension (scores: List[Score])
-        private def averageScore: Score =
-          if scores.isEmpty then 0 else scores.sum / scores.length
+      override def loadReview(article: Article)(scores: Map[Question, Score]): Unit =
+        require(scores.keySet == Question.values.toSet)
+        reviews ::= article -> scores
+
+      override def orderedScores(article: Article, question: Question): List[Score] =
+        questionScores(article, question).sorted
+
+      override def averageFinalScore(article: Article): Score =
+        questionScores(article, Question.FINAL).averageScore
+
+      override def acceptedArticles: Set[Article] = reviews
+        .filter((a, s) => averageFinalScore(a) > 5 && s.getOrElse(Question.RELEVANCE, 0.0) >= 8)
+        .map((a, _) => a)
+        .toSet
+
+      override def sortedAcceptedArticles: List[(Article, Score)] = acceptedArticles
+        .map(a => a -> averageFinalScore(a))
+        .toList
+        .sortBy((_, s) => s)
+
+      override def averageWeightedFinalScoreMap: Map[Article, Score] =
+        articles.map(a => a -> averageWeightedFinalScore(a)).toMap
 
   end ConferenceReviewing
 
