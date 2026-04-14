@@ -1,6 +1,7 @@
 package it.unibo.pps.ex2
 
 import it.unibo.pps.ex2
+import it.unibo.pps.ex2.Conference.Question.CONFIDENCE
 
 object Conference:
   /** Article Type. */
@@ -88,12 +89,9 @@ object Conference:
           if scores.isEmpty then 0 else scores.sum / scores.length
 
       private def averageWeightedFinalScore(article: Article): Score =
-        reviews
-          .filter((a, _) => a == article)
-          .flatMap((_, s) => s.get(Question.FINAL)
-            .flatMap(fs => s.get(Question.CONFIDENCE)
-              .map(cs => fs * cs / 10)))
-          .averageScore
+        val finalScores = questionScores(article, Question.FINAL)
+        val confidenceScores = questionScores(article, CONFIDENCE)
+        (finalScores zip confidenceScores map(_ * _ / 10)).averageScore
 
       override def loadReview(article: Article)(scores: Map[Question, Score]): Unit =
         require(scores.keySet == Question.values.toSet)
@@ -105,10 +103,9 @@ object Conference:
       override def averageFinalScore(article: Article): Score =
         questionScores(article, Question.FINAL).averageScore
 
-      override def acceptedArticles: Set[Article] = reviews
-        .filter((a, s) => averageFinalScore(a) > 5 && s.getOrElse(Question.RELEVANCE, 0.0) >= 8)
-        .map((a, _) => a)
-        .toSet
+      override def acceptedArticles: Set[Article] = articles
+        .filter(averageFinalScore(_) > 5)
+        .filter(questionScores(_, Question.RELEVANCE) exists (_ >= 8))
 
       override def sortedAcceptedArticles: List[(Article, Score)] = acceptedArticles
         .map(a => a -> averageFinalScore(a))
