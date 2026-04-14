@@ -61,10 +61,11 @@ enum List[A]:
     indices
 
   def zip[B](l2: List[B]): List[(A, B)] =
+    def optionToList(opt: Option[(A, B)]): List[(A, B)] = opt match
+      case Some(v) => List(v)
+      case None => Nil()
     require(length() == l2.length())
-    (this, l2) match
-      case (h1 :: t1, h2 :: t2) => (h1, h2) :: t1.zip(t2)
-      case _ => Nil()
+    indices() flatMap (i => optionToList(for a <- get(i); b <- l2.get(i) yield (a, b)))
 
   def zipWithValue[B](value: B): List[(A, B)] =
     map((_, value))
